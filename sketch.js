@@ -1,5 +1,6 @@
-const dice = DiceFactory();
+const diceArtist = DiceFactory();
 const agg = new Aggregator();
+let count;
 
 let canvas,
     rollButton,
@@ -8,14 +9,8 @@ let canvas,
     buttonsDiv;
 
 function rollDice(){
-  return random([1,2,3,4,5,6]);
-}
-
-function drawNewDiceRoll(){
-  x = rollDice();
-  background(255);
-  agg.add(x);
-  dice.draw(x, width/3, height/3);
+  count = random([1,2,3,4,5,6]);
+  agg.add(count);
 }
 
 function setup() {
@@ -27,8 +22,11 @@ function setup() {
   buttonsDiv.child(rollButton);
   buttonsDiv.child(holdButton);
   buttonsDiv.child(addPlayerButton);
-  rollButton.mousePressed(drawNewDiceRoll);
+  rollButton.mousePressed(rollDice);
 }
 
 function draw() {
+  background(255);
+  agg.draw();
+  diceArtist.draw(count, width/3, height/3);
 }
