@@ -16,7 +16,20 @@ let canvas,
 
 function rollDice(){
   count = random([1,2,3,4,5,6]);
-  agg.add(count);
+  return count;
+}
+
+function processDiceRoll(r){
+  if (r === 1){
+    agg.reset();
+    togglePlayer();
+  } else{
+    agg.add(r);
+  }
+}
+
+function rollButtonAction(){
+  processDiceRoll(rollDice());
 }
 
 function scoreText(scoreStr, player){
@@ -42,9 +55,7 @@ function updatePlayerScoreText(){
   playerTwoScoreDiv.elt.innerHTML = scoreText("Player Two score", playerTwo);
 }
 
-function setup() {
-	canvas = createCanvas(800, 600);
-  rollButton = createButton('Roll');
+function setup() {canvas = createCanvas(800, 600); rollButton = createButton('Roll');
   holdButton = createButton('Hold');
   scoresDiv = createDiv('');
   playerOneScoreDiv = createDiv(scoreText("Player One score", playerOne));
@@ -55,7 +66,7 @@ function setup() {
   buttonsDiv.child(rollButton);
   buttonsDiv.child(holdButton);
   holdButton.mousePressed(hold);
-  rollButton.mousePressed(rollDice);
+  rollButton.mousePressed(rollButtonAction);
 }
 
 function draw() {
