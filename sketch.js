@@ -70,8 +70,18 @@ function drawSix(size, posX, posY){
   pop();
 }
 
+let canvas,
+    rollButton,
+    addPlayerButton,
+    buttonsDiv;
+
 function setup() {
-	createCanvas(800, 600);
+	canvas = createCanvas(800, 600);
+  rollButton = createButton('Roll');
+  addPlayerButton = createButton('Add player');
+  buttonsDiv = createDiv('');
+  buttonsDiv.child(rollButton);
+  buttonsDiv.child(addPlayerButton);
 }
 
 function draw() {
@@ -80,5 +90,5 @@ function draw() {
   //drawThree(150, width/2, height/2);
   //drawFour(150, width/2, height/2);
   //drawFive(150, width/2, height/2);
-  //drawSix(150, width/2, height/2);
+  drawSix(150, width/2, height/2);
 }
