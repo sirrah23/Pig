@@ -1,94 +1,34 @@
-const diceCircleSize = 20;
-
-function drawOne(size, posX, posY){
-  rect(posX, posY, size, size);
-  push();
-  translate(posX, posY);
-  fill(0);
-  ellipse(size/2, size/2, diceCircleSize, diceCircleSize);
-  pop();
-}
-
-function drawTwo(size, posX, posY){
-  rect(posX, posY, size, size);
-  push();
-  translate(posX, posY);
-  fill(0);
-  ellipse(size*(1/4), size/2, diceCircleSize, diceCircleSize);
-  ellipse(size*(3/4), size/2, diceCircleSize, diceCircleSize);
-  pop();
-}
-
-function drawThree(size, posX, posY){
-  rect(posX, posY, size, size);
-  push();
-  translate(posX, posY);
-  fill(0);
-  ellipse(size*(1/4), size*(1/4), diceCircleSize, diceCircleSize);
-  ellipse(size*(1/2), size*(1/2), diceCircleSize, diceCircleSize);
-  ellipse(size*(3/4), size*(3/4), diceCircleSize, diceCircleSize);
-  pop();
-}
-
-
-function drawFour(size, posX, posY){
-  rect(posX, posY, size, size);
-  push();
-  translate(posX, posY);
-  fill(0);
-  ellipse(size*(1/4), size*(1/4), diceCircleSize, diceCircleSize);
-  ellipse(size*(1/4), size*(3/4), diceCircleSize, diceCircleSize);
-  ellipse(size*(3/4), size*(1/4), diceCircleSize, diceCircleSize);
-  ellipse(size*(3/4), size*(3/4), diceCircleSize, diceCircleSize);
-  pop();
-}
-
-function drawFive(size, posX, posY){
-  rect(posX, posY, size, size);
-  push();
-  translate(posX, posY);
-  fill(0);
-  ellipse(size*(1/4), size*(1/5), diceCircleSize, diceCircleSize);
-  ellipse(size*(1/4), size*(4/5), diceCircleSize, diceCircleSize);
-  ellipse(size*(1/2), size*(1/2), diceCircleSize, diceCircleSize);
-  ellipse(size*(3/4), size*(1/5), diceCircleSize, diceCircleSize);
-  ellipse(size*(3/4), size*(4/5), diceCircleSize, diceCircleSize);
-  pop();
-}
-
-function drawSix(size, posX, posY){
-  rect(posX, posY, size, size);
-  push();
-  translate(posX, posY);
-  fill(0);
-  ellipse(size*(1/3), size*(2/8), diceCircleSize, diceCircleSize);
-  ellipse(size*(1/3), size*(4/8), diceCircleSize, diceCircleSize);
-  ellipse(size*(1/3), size*(6/8), diceCircleSize, diceCircleSize);
-  ellipse(size*(2/3), size*(2/8), diceCircleSize, diceCircleSize);
-  ellipse(size*(2/3), size*(4/8), diceCircleSize, diceCircleSize);
-  ellipse(size*(2/3), size*(6/8), diceCircleSize, diceCircleSize);
-  pop();
-}
+const dice = DiceFactory();
+const agg = new Aggregator();
 
 let canvas,
     rollButton,
     addPlayerButton,
+    holdButton,
     buttonsDiv;
+
+function rollDice(){
+  return random([1,2,3,4,5,6]);
+}
+
+function drawNewDiceRoll(){
+  x = rollDice();
+  background(255);
+  agg.add(x);
+  dice.draw(x, width/3, height/3);
+}
 
 function setup() {
 	canvas = createCanvas(800, 600);
   rollButton = createButton('Roll');
+  holdButton = createButton('Hold');
   addPlayerButton = createButton('Add player');
   buttonsDiv = createDiv('');
   buttonsDiv.child(rollButton);
+  buttonsDiv.child(holdButton);
   buttonsDiv.child(addPlayerButton);
+  rollButton.mousePressed(drawNewDiceRoll);
 }
 
 function draw() {
-  //drawOne(150, width/2, height/2);
-  //drawTwo(150, width/2, height/2);
-  //drawThree(150, width/2, height/2);
-  //drawFour(150, width/2, height/2);
-  //drawFive(150, width/2, height/2);
-  drawSix(150, width/2, height/2);
 }
