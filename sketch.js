@@ -1,7 +1,8 @@
 const diceArtist = DiceFactory();
 const agg = new Aggregator();
-const playerOne = new Player();
-const playerTwo = new Player();
+const playerOne = new Player("Player One");
+const playerTwo = new Player("Player Two");
+const scoreToWin = 15;
 
 let count;
 let currPlayer = playerOne;
@@ -32,8 +33,13 @@ function rollButtonAction(){
   processDiceRoll(rollDice());
 }
 
-function scoreText(scoreStr, player){
-  return `${scoreStr}: ${player.scoreGet()}`;
+function scoreText(player){
+  return `${player.name} score: ${player.scoreGet()}`;
+}
+
+function winnerAlert(player){
+  alert(`The winner is ${player.name}`);
+  return;
 }
 
 function togglePlayer(){
@@ -50,16 +56,36 @@ function hold(){
   agg.reset();
 }
 
+function win(){
+  if (playerOne.scoreGet() >= scoreToWin){
+    return playerOne;
+  } else if (playerTwo.scoreGet() >= scoreToWin){
+    return playerTwo;
+  } else{
+    return null;
+  }
+}
+
 function updatePlayerScoreText(){
-  playerOneScoreDiv.elt.innerHTML = scoreText("Player One score", playerOne);
-  playerTwoScoreDiv.elt.innerHTML = scoreText("Player Two score", playerTwo);
+  playerOneScoreDiv.elt.innerHTML = scoreText(playerOne);
+  if(currPlayer === playerOne){
+    playerOneScoreDiv.elt.setAttribute("class", "green");
+  } else{
+    playerOneScoreDiv.elt.removeAttribute("class", "green");
+  }
+  playerTwoScoreDiv.elt.innerHTML = scoreText(playerTwo);
+  if(currPlayer === playerTwo){
+    playerTwoScoreDiv.elt.setAttribute("class", "green");
+  } else{
+    playerTwoScoreDiv.elt.removeAttribute("class", "green");
+  }
 }
 
 function setup() {canvas = createCanvas(800, 600); rollButton = createButton('Roll');
   holdButton = createButton('Hold');
   scoresDiv = createDiv('');
-  playerOneScoreDiv = createDiv(scoreText("Player One score", playerOne));
-  playerTwoScoreDiv = createDiv(scoreText("Player Two score", playerTwo));
+  playerOneScoreDiv = createDiv(scoreText(playerOne));
+  playerTwoScoreDiv = createDiv(scoreText(playerTwo));
   scoresDiv.child(playerOneScoreDiv);
   scoresDiv.child(playerTwoScoreDiv);
   buttonsDiv = createDiv('');
@@ -69,9 +95,18 @@ function setup() {canvas = createCanvas(800, 600); rollButton = createButton('Ro
   rollButton.mousePressed(rollButtonAction);
 }
 
+let gameOver = false;
+
 function draw() {
+  if(gameOver){
+    return;
+  }
   background(255);
   agg.draw();
   diceArtist.draw(count, width/3, height/3);
   updatePlayerScoreText();
+  if((winner = win()) != null){
+    winnerAlert(winner);
+    gameOver = true;
+  }
 }

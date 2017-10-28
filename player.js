@@ -1,5 +1,6 @@
-function Player(){
+function Player(name){
   this.score = 0;
+  this.name = name;
 }
 
 Player.prototype.scoreGet = function(n){
