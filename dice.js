@@ -1,4 +1,4 @@
-const DiceFactory =(function(){
+const DiceArtistFactory =(function(){
   const diceCircleSize = 20;
   const diceSize = 150;
 
