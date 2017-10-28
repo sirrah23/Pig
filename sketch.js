@@ -5,70 +5,87 @@ const gameManager = new GameManager(
   new Aggregator(),
   15
 );
-
-let canvas,
-    rollButton,
-    holdButton,
-    buttonsDiv,
-    scoresDiv,
-    playerOneScoreDiv,
-    playerTwoScoreDiv;
-
+let visualsManager;
 
 function rollDice(){
   count = random([1,2,3,4,5,6]);
   return count;
 }
 
-function rollButtonAction(){
-  gameManager.processDiceRoll(rollDice());
-}
+function VisualsManager(gameManager, rollDice, rollButton, holdButton, p1ScoreDiv, p2ScoreDiv){
+  this.gameManager = gameManager;
+  this.rollDice = rollDice;
+  this.rollButton = rollButton;
+  this.holdButton = holdButton;
+  this.p1ScoreDiv = p1ScoreDiv;
+  this.p2ScoreDiv = p2ScoreDiv;
+  this.holdButton.mousePressed(this.holdButtonAction.bind(this));
+  this.rollButton.mousePressed(this.rollButtonAction.bind(this));
+};
 
-function holdButtonAction(){
-  gameManager.hold();
-}
+VisualsManager.prototype.rollButtonAction = function(){
+  const success = this.gameManager.processDiceRoll(this.rollDice());
+  if (!success){
+    this.updatePlayerScoreText();
+  }
+};
 
-function scoreText(player){
+VisualsManager.prototype.holdButtonAction = function(){
+  this.gameManager.hold();
+  this.updatePlayerScoreText();
+};
+
+VisualsManager.prototype.scoreText = function(player){
   return `${player.name} score: ${player.scoreGet()}`;
-}
+};
 
-function winnerAlert(player){
+VisualsManager.prototype.winnerAlert = function(player){
   alert(`The winner is ${player.name}`);
   return;
-}
+};
 
-// TODO: Move out of loop
-function updatePlayerScoreText(gameManager){
-  playerOneScoreDiv.elt.innerHTML = scoreText(gameManager.p1);
-  if(gameManager.currPlayer.name === "Player One"){
-    playerOneScoreDiv.elt.setAttribute("class", "green");
+VisualsManager.prototype.updatePlayerScoreText = function(){
+
+  this.p1ScoreDiv.elt.innerHTML = this.scoreText(this.gameManager.p1);
+
+  if(this.gameManager.currPlayer.name === "Player One"){
+    this.p1ScoreDiv.elt.setAttribute("class", "green");
   } else{
-    playerOneScoreDiv.elt.removeAttribute("class", "green");
+    this.p1ScoreDiv.elt.removeAttribute("class", "green");
   }
-  playerTwoScoreDiv.elt.innerHTML = scoreText(gameManager.p2);
-  if(gameManager.currPlayer.name === "Player Two"){
-    playerTwoScoreDiv.elt.setAttribute("class", "green");
+
+  this.p2ScoreDiv.elt.innerHTML = this.scoreText(this.gameManager.p2);
+  if(this.gameManager.currPlayer.name === "Player Two"){
+    this.p2ScoreDiv.elt.setAttribute("class", "green");
   } else{
-    playerTwoScoreDiv.elt.removeAttribute("class", "green");
+    this.p2ScoreDiv.elt.removeAttribute("class", "green");
   }
-}
+
+};
+
+let rollButton,
+    holdButton,
+    buttonsDiv,
+    scoresDiv,
+    p1ScoreDiv,
+    p2ScoreDiv;
 
 function setup() {
-  canvas = createCanvas(800, 600);
-  rollButton = createButton('Roll');
-  holdButton = createButton('Hold');
+  createCanvas(800, 600);
 
   scoresDiv = createDiv('');
-  playerOneScoreDiv = createDiv(scoreText(gameManager.p1));
-  playerTwoScoreDiv = createDiv(scoreText(gameManager.p2));
-  scoresDiv.child(playerOneScoreDiv);
-  scoresDiv.child(playerTwoScoreDiv);
+  p1ScoreDiv = createDiv('');
+  p2ScoreDiv = createDiv('');
+  scoresDiv.child(p1ScoreDiv);
+  scoresDiv.child(p2ScoreDiv);
 
+  rollButton = createButton('Roll');
+  holdButton = createButton('Hold');
   buttonsDiv = createDiv('');
   buttonsDiv.child(rollButton);
   buttonsDiv.child(holdButton);
-  holdButton.mousePressed(holdButtonAction);
-  rollButton.mousePressed(rollButtonAction);
+
+  visualsManager = new VisualsManager(gameManager, rollDice, rollButton, holdButton, p1ScoreDiv, p2ScoreDiv);
 }
 
 let gameOver = false;
@@ -80,9 +97,8 @@ function draw() {
   background(255);
   gameManager.aggregator.draw();
   diceArtist.draw(gameManager.diceValue, width/3, height/3);
-  updatePlayerScoreText(gameManager);
   if(gameManager.gameOver()){
-    winnerAlert(gameManager.winner);
+    visualsManager.winnerAlert(gameManager.winner);
     gameOver = true;
   }
 }

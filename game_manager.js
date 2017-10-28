@@ -10,13 +10,17 @@ function GameManager(p1, p2, aggregator, scoreToWin){
 }
 
 GameManager.prototype.processDiceRoll = function(r){
+  let success;
   this.diceValue = r;
   if (r === 1){
     this.aggregator.reset();
     this.togglePlayer();
+    success = false;
   } else{
     this.aggregator.add(r);
+    success = true;
   }
+  return success;
 };
 
 GameManager.prototype.togglePlayer = function(){
