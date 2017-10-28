@@ -31,7 +31,7 @@ function setup() {
     new Player("Player One"),
     new Player("Player Two"),
     new Aggregator(),
-    15
+    75
   );
 
   visualsManager = new VisualsManager(
